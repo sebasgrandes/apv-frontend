@@ -1,0 +1,11 @@
+# explicame: const useAuth = () => {return useContext(AuthContext);};
+
+El fragmento de código seleccionado define un hook personalizado llamado useAuth en React. Este hook está diseñado para proporcionar una forma fácil de acceder al contexto de autenticación en cualquier lugar de tu aplicación.
+
+En React, los Contextos proporcionan una forma de pasar datos a través del árbol de componentes sin tener que pasar props manualmente en cada nivel. En este caso, parece que tienes un AuthContext que probablemente almacena información sobre el estado de autenticación del usuario.
+
+La función useContext es un hook de React que te permite acceder al valor actual de un contexto. Cuando llamas a useContext(AuthContext), obtienes el valor actual del AuthContext.
+
+Al envolver useContext(AuthContext) en tu propio hook personalizado useAuth, estás creando una abstracción que permite a cualquier componente de tu aplicación acceder fácilmente al contexto de autenticación simplemente llamando a useAuth().
+
+En resumen, useAuth es un hook personalizado que devuelve el valor actual del AuthContext, proporcionando una forma conveniente de acceder al estado de autenticación en cualquier lugar de tu aplicación.

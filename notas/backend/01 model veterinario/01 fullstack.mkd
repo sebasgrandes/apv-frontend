@@ -1,0 +1,13 @@
+gracias a node js podemos crear apps en el servidor que consulten una db y muestren resultados en el sitio web, autenticar usuarios, realizar pagos, etc.
+
+frontend: encargado de consumir endpoints de una api
+una api puede ser creada con cualquier lenguaje de programacion
+
+el frontend puede ser creado con react, vue, angular, svelte, etc.
+
+backend: encargado de crear la api y dar rptas json para que el frontend lo consuman
+debe crear y asegurar los endpoints para recipit las solicitudes http
+node es una buena opcion ya que el codigo es de js pero se puede utilizar igual cualquier framework o lenguaje del lado del servidor
+
+apps moviles y fullstack
+con react native puedes crear apps para ios y android, usando js

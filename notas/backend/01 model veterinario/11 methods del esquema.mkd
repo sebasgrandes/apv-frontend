@@ -1,0 +1,78 @@
+# explicame paso a paso que hace mi siguiente codigo:
+
+```javascript
+veterinarioSchema.methods.comprobarPassword = async function (
+    passwordFormulario
+) {
+    return await bcrypt.compare(passwordFormulario, this.password);
+};
+```
+
+Claro, te explicaré tu código paso a paso. Este es un método personalizado definido en un esquema de Mongoose que utiliza la biblioteca `bcrypt` para comparar contraseñas. Aquí está la explicación de cada parte del código:
+
+1. **Definición del Método Personalizado en el Esquema**:
+
+    - `veterinarioSchema.methods.comprobarPassword = async function (passwordFormulario) { ... }`
+    - Aquí, estás agregando un método llamado `comprobarPassword` a los métodos disponibles en el esquema `veterinarioSchema`.
+    - `async function (passwordFormulario) { ... }`: Es una función asíncrona que toma un argumento llamado `passwordFormulario`. Este argumento representará la contraseña que se quiere comparar con la almacenada en la base de datos.
+
+2. **Uso de bcrypt para Comparar Contraseñas**:
+
+    - `return await bcrypt.compare(passwordFormulario, this.password);`
+    - `bcrypt.compare`: Esta es una función de la biblioteca `bcrypt` que se utiliza para comparar una contraseña sin encriptar con una encriptada. Es comúnmente usada para validar contraseñas en procesos de autenticación.
+    - `passwordFormulario`: Es la contraseña proporcionada, probablemente obtenida de un formulario de inicio de sesión o similar.
+    - `this.password`: Aquí, `this` se refiere al documento actual basado en el esquema `veterinarioSchema`. `this.password` es la contraseña encriptada almacenada en el documento (en la base de datos).
+    - `await`: Como `bcrypt.compare` es una operación asíncrona, se utiliza `await` para esperar a que la comparación se complete antes de continuar.
+
+3. **Retorno del Resultado de la Comparación**:
+    - La función devuelve el resultado de `bcrypt.compare`, que es una promesa que se resuelve con un valor booleano.
+    - `true` si las contraseñas coinciden (es decir, si la contraseña proporcionada, una vez encriptada, coincide con la almacenada en la base de datos).
+    - `false` si no coinciden.
+
+En resumen, este método `comprobarPassword` en tu esquema `veterinarioSchema` proporciona una manera de comparar una contraseña proporcionada con la contraseña encriptada almacenada en la base de datos asociada a un documento particular de ese esquema. Es útil para validar la identidad de un usuario durante el proceso de inicio de sesión.
+
+# al usar .this en un metodo o middleware aplicado a mi esquema... este siempre representa mi documento actual cierto?
+
+Sí, al utilizar `this` dentro de un método o middleware aplicado a tu esquema en Mongoose, `this` siempre se refiere al documento actual que está siendo procesado. En este contexto:
+
+-   En un método personalizado, como el que has mostrado anteriormente, `this` se refiere al documento en el que se invoca ese método. Por ejemplo, si tienes un documento de un modelo basado en ese esquema y llamas al método `comprobarPassword` en ese documento, `this` se refiere a ese documento en particular.
+
+-   En un middleware, como un middleware `.pre` o `.post` definido en el esquema, `this` también se refiere al documento que está siendo procesado antes o después de cierta operación (por ejemplo, antes de guardar el documento en la base de datos).
+
+Esto permite que puedas acceder y manipular los datos específicos de ese documento en el contexto del método o middleware, lo que es fundamental para realizar acciones personalizadas o validaciones basadas en los datos de ese documento en particular.
+
+# aqui por ejemplo que estoy haciendo: usuario.comprobarPassword(usuario.password)
+
+Cuando llamas `usuario.comprobarPassword(usuario.password)`, estás ejecutando el método `comprobarPassword` en una instancia del modelo que representa un documento de usuario. Aquí está lo que sucede en detalle:
+
+1. **Instancia del Modelo `usuario`**:
+
+    - `usuario` es una instancia de un modelo (probablemente creado a partir de un esquema como `veterinarioSchema` u otro esquema que definiste). Este modelo representa un documento específico en tu base de datos.
+
+2. **Llamada al Método `comprobarPassword`**:
+
+    - `.comprobarPassword` es un método definido en el esquema del modelo de `usuario`. Este método es el que describiste anteriormente, utilizado para comparar una contraseña proporcionada con la contraseña almacenada (encriptada) en la base de datos.
+
+3. **Parámetro del Método**:
+
+    - `usuario.password` es el argumento que estás pasando al método `comprobarPassword`. En este caso, parece que estás pasando la contraseña que ya está almacenada en el documento `usuario`.
+
+4. **Ejecución y Resultado**:
+    - El método `comprobarPassword` ejecutará `bcrypt.compare`, comparando `usuario.password` (la contraseña almacenada en el documento `usuario`) con `this.password` (que en el contexto del método también será `usuario.password`, ya que `this` se refiere al documento `usuario`).
+    - Esto resultará en una comparación de la contraseña con ella misma, lo que siempre debería retornar `true`, ya que la contraseña coincidirá consigo misma.
+
+Sin embargo, hay que señalar que esta operación, tal como está, no es típica o particularmente útil, ya que estás comparando la contraseña del documento con ella misma. Normalmente, este método se usaría para comparar la contraseña ingresada por un usuario (por ejemplo, en un formulario de inicio de sesión) con la contraseña almacenada encriptada en la base de datos para validar la autenticidad del usuario.
+
+# // creamos .methods.comprobarPassword en el esquema y no en el modelo. porque los esquemas definen la estructura y reglas de...?
+
+Los métodos como `.methods.comprobarPassword` se definen en el esquema en Mongoose y no directamente en el modelo debido a que los esquemas en Mongoose definen la estructura y las reglas de los datos para una colección específica en MongoDB. Aquí está el porqué de esta práctica:
+
+1. **Definición de la Estructura de Datos**: Un esquema en Mongoose define cómo deberían lucir los datos en una colección de MongoDB. Esto incluye definir tipos de datos para los campos, restricciones, y validaciones.
+
+2. **Definición de Comportamientos y Métodos**: Además de la estructura de los datos, los esquemas en Mongoose también permiten definir comportamientos y métodos que serán aplicados a los documentos individuales. Al definir un método en el esquema, estás asegurándote de que todas las instancias de ese esquema (es decir, todos los documentos creados a partir de un modelo que utiliza ese esquema) tendrán acceso a ese método.
+
+3. **Reutilización y Consistencia**: Al definir métodos en el nivel del esquema, garantizas que todos los modelos creados a partir de ese esquema tengan un comportamiento consistente. Esto facilita la reutilización de código y mantiene la lógica de negocio organizada y centralizada.
+
+4. **Abstracción y Mantenimiento del Código**: Permite una mejor abstracción y mantenimiento del código. En lugar de definir métodos similares o repetitivos en varios modelos, puedes definirlos una sola vez en el esquema, lo que hace que el código sea más limpio y fácil de mantener.
+
+En resumen, definir métodos como `.methods.comprobarPassword` en el esquema en lugar de en el modelo permite una gestión más eficiente de la estructura de los datos, los comportamientos, y la lógica de negocio asociados con esos datos. Asegura que todos los documentos creados a partir de ese esquema tengan acceso a esos métodos y se comporten de manera consistente.

@@ -1,0 +1,15 @@
+# en que casos se vuelve a renderizar mi componente general de "registrar?
+
+En React, un componente se vuelve a renderizar en los siguientes casos:
+
+Cambio de estado: Si utilizas el hook useState en tu componente y actualizas el estado con la función de actualización proporcionada por useState, React re-renderizará el componente.
+
+Cambio de props: Si las props que se pasan al componente cambian, React re-renderizará el componente.
+
+Cambio de contexto: Si tu componente está suscrito a un contexto de React y los valores de ese contexto cambian, React re-renderizará el componente.
+
+Llamada a la función forceUpdate: Si llamas a la función forceUpdate, React re-renderizará el componente.
+
+Uso del hook useEffect con dependencias que cambian: Si utilizas el hook useEffect y las dependencias que pasas a useEffect cambian, React re-renderizará el componente.
+
+En tu caso, si la variable alerta cambia, el componente Registrar se re-renderizará porque alerta es una prop o un estado del componente. Esto también provocará que se reevalúe la expresión {msg && <Alerta alerta={alerta} />}, lo que puede hacer que el componente Alerta se renderice o deje de renderizarse, dependiendo del nuevo valor de msg.

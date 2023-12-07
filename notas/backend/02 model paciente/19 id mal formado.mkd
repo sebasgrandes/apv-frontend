@@ -1,0 +1,9 @@
+# un id mal formado no es un id incorrecto?
+
+Tienes razón, es importante aclarar la diferencia entre un ID "incorrecto" y un ID "mal formado" en el contexto de las bases de datos como MongoDB y el uso de Mongoose en Node.js:
+
+1. **ID Incorrecto**: Se refiere a un ID que está bien formado (cumple con el formato esperado) pero no corresponde a ningún documento en la base de datos. Por ejemplo, un ID que tiene el formato correcto de un ObjectId de MongoDB pero no existe en la colección. En este caso, `findById` devolverá `null`, y no se generará un error. Aquí es donde el chequeo `if (!paciente)` es útil.
+
+2. **ID Mal Formado**: Se refiere a un ID que no cumple con el formato esperado. Por ejemplo, en MongoDB, un ObjectId típicamente tiene 24 caracteres hexadecimales. Si pasas algo que no se ajusta a este formato, `findById` lanzará un error. Este error será capturado por el bloque `try-catch`.
+
+En tu código, el bloque `try-catch` manejará errores como un ID mal formado, mientras que el chequeo `if (!paciente)` se encarga de los casos en que el ID es correcto en formato pero no coincide con ningún documento en la base de datos. Ambos son importantes para manejar diferentes tipos de situaciones excepcionales.

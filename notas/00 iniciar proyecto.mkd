@@ -1,0 +1,208 @@
+# Pasos previos
+
+## Herramientas necesarias
+
+### Instalacion de herramientas necesarias para el proyecto
+
+-   Mongo DB Atlas (registrate): servicio en la nube para implementar y administrar db MongoDB. lo conectaremos con nodejs usando...
+-   Mongoose: como orm, es una biblioteca de Node.js para trabajar con MongoDB. facilita la creación, consulta, actualización y eliminación de documentos en una base de datos MongoDB
+-   Mongo DB Compass (descarga): herramienta GUI para facilitar la administración y exploración de tu db MongoDB
+-   Postman (descarga): para probar nuestra API
+
+### Creando y conectando la db
+
+-   crea tu db en cloud.mongodb.com (create db) y selecciona como conexion a Compass
+-   pega el link de conexion de tu db a Mongo DB Compass y crea una db
+
+# BACKEND
+
+todo lo siguiente sucede en la carpeta "backend"
+
+## Creando servidor con Node JS
+
+-   creamos nuestra carpeta "backend", y dentro...
+-   inicializamos un nuevo proyecto de node js
+    terminal: `npm init`
+-   creamos index.js
+-   modificamos el script por defecto de package.json para correr con node nuestro index.js
+    `"start": "node index.js"`
+-   corremos nuestro index.js
+    terminal: `npm start` o `npm run start`
+
+-   agrega la dependencia de express
+    terminal: `npm i express`
+    <!-- aparece node_modules (archivos que necesita express para funcionar). y package-lock.json (no debes modificarlo ni borrarlo) -->
+
+habilitamos la sintaxis de imports y exports de emc modules en lugar de usar commonjs
+
+-   a package.json agrega `"type": "module"`
+
+instalamos la dependenvia de desarrollo "nodemon"
+
+<!-- hasta aqui, en cada arranque de tu servidor se queda registrado lo de index.js... por lo que cada que hagas un cambio en index.js debes estar parando y arrancando tu servidor con `npm start`. a menos que instales NODEMON -->
+
+utilidad de nodemon: cada que haces un cambio en tu codigo y lo guardas, reinicia el servidor automaticamente
+
+-   instala la dependencia de desarrollo de nodemon con `npm i --save-dev nodemon`
+<!-- cuando lleves el proyecto a producción, las dependencias de desarrollo serán ignoradas -->
+-   añadimos un script a package.json para correr con nodemon nuestro index.js
+    `"dev": "nodemon index.js"`
+-   corremos nuestro index.js con nodemon
+    terminal: `npm run dev`
+
+crea y configura tu servidor con express en index.js
+
+-   importa express y configura
+
+conectamos la db con express
+
+-   instalamos la dependencia de mongoose (es nuestro orm)
+    terminal: `npm i mongoose`
+-   creamos config/db.js, aqui importarás mongoose y escribirás codigo para conectarte a la db... exportas e importas en index.js
+<!-- recuerda ir a mongo db atlas, connect... y copiar tu url de conexion de donde dice DRIVERS (es distinta a la url de la opcion anterior de mongo db compass) -->
+
+creando variables de entorno
+
+-   crea el archivo .env y crea/almacena tus variables de entorno
+<!-- de esta manera al hacer deploy, agregas este archivo a .gitignore -->
+-   instala la dependencia dotenv
+    <!-- es una dependencia de Node.js utilizada para cargar variables de entorno desde un archivo .env a process.env.  -->
+    terminal: `npm i dotenv`
+-   en tu index.js importa la dependencia "dotenv" y agrega `dotenv.config()` antes de `conectarDB()`
+-   agrega process.env.URL (en db.js) y process.env.PORT (en index.js)
+-   **no olvides agregar el nombre de tu "coleccion" (apv) en la url de process.env.URL**
+<!-- process.env. es sintaxis de nodejs y es la forma en la que accedemos al valor de las variables de entorno -->
+
+## Modelos, Routing y Controllers PARA VETERINARIOS
+
+### modelos
+
+crea tus modelos (Veterinario.js) en la carpeta models
+crea tus routings (veterinarioRouters.js) en la carpeta routes
+
+-   crealos y luego en tu index.js modifica tus "use" (res y req por el nombre de los routings)
+
+crea tus controladores en la carpeta controllers... y sustituye codigo de tus rutas.
+
+<!-- puedes usar postman para probar por las solicitudes http (request)... y ver lo que se obtiene en cada solicitud por ejemplo get o post a tus url. también asignar variables en tu coleccion de psotman -->
+
+-   también deberas colocar codigo para guardar en la base de datos
+    hashea tus passwords con la dependencia bcrypt
+-   terminal: `npm i bcrypt`
+-   configuralo en tu model Veterinario.js
+<!-- la dependencia bcrypt nos permite hashear los passwords y autenticar los usuarios con lo que esta hasheado en la base de datos  -->
+
+**autenticando el usuario**
+
+**generando jwt**
+
+<!-- enviamos json web tokens para comprobar que el usuario esta logeado y asi controlar a que paginas tiene acceso... ejemplo: cuando el usuario se logea el servidor crea un jwt y en la navegador lo recibe y guarda, asi, cuando el usuario quiera acceder a recursos de solo logins, este jwt le dice al servidor que este usuario si tiene acceso...
+de esta forma internamente buscamos al usuario por el id gracias al jwt -->
+<!-- aqui puedes decodificar los jwt: https://jwt.io/ -->
+
+-   terminal: `npm i jsonwebtoken`
+-   creas el archivo generarJWT en tu carpeta helpers y escribes codigo, también creas una variable de entorno, luego lo aplicas en tu controller
+-   usas postman y bearer auth
+-   valida y autentica el token
+-   crea el archivo middleware/authMiddleware.js para añadir un middleware a tu ruta /login en el que podras autenticar y validar el token de jwt.. para luego pasar a mostrar el perfil a dicho usuario ya validado mediante la decodificacion del token
+-   termina con tus demas routes
+
+## Modelos, Routing y Controllers PARA PACIENTES
+
+-   crea tu model de pacientes, tus routes y tus controllers, configuralos
+
+# FRONTEND
+
+despues de acabar parte del backend... pasamos al frontend. asi que todo lo siguiente sucede en la carpeta "frontend"
+
+### creando el proyecto
+
+**inicializa el proyecto de react**
+
+-   terminal (en la carpeta raiz.. fullstackjs): `npm init vite@latest`
+-   seleccionas react. te creara la carpeta de frontend, vas a esa carpeta en la terminal y le das a `npm install`
+-   arranca el servidor de desarrollo con `npm run dev`
+-   limpia los archivos innecesarios de la carpeta src. deja limpio el archivo app.jsx
+
+**instalando tailwind css**
+
+1. terminal (en la carpeta frontend): `npm install -D tailwindcss postcss autoprefixer`
+ <!-- el -D significa de desarrollo, también puedes poner --save-dev -->
+2. terminal: `npx tailwindcss init -p` /esto nos creará los archivos tailwind y post css config
+ <!-- npx te permite ejecutar ciertos paquetes sin isntalar nada -->
+3. modificas tus archivos:
+
+-   en `tailwind.config.js`: colocas dentro de content que archivos usarán tailwindcss ("index.html", `./src/**/*.{js,ts,jsx,tsx}`)
+-   `index.css` es el css principal que se aplicará a todos los componentes... porque esta en App.jsx: ahi en index.css, lo limpias, y colocas los "tailwind"
+
+4. instala/actica la extension tailwind css intellisense
+5. ya puedes agregar codigo tailwind a tus archivos js, jsx, etc...
+
+<!-- REINICIA EL SERVIDOR. escribe: npm run dev -->
+
+**instalando react router (libreria de routing)**
+
+-   terminal: `cd frontend` -> `npm i react-router-dom`
+-   en tu App.jsx importa `import {BrowserRouter, Routes, Route} from "react-router-dom`
+-   define tus rutas en App.jsx
+<!-- dentro de src... -->
+-   crea la carpeta layout y dentro AuthLayout.jsx
+-   crea la carpeta paginas y dentro coloca tus componentes
+-   en App.jsx sigue definiendo tus rutas y subrutas
+
+### Autenticación, Registro, Confirmación
+
+**crea el frontend...**
+
+-   comienza con tu AuthLayout y Login... agrega estilos y componentes, etc
+
+instala axios
+
+<!-- axios es una biblioteca en js para hacer solicitudes http desde el navegador y node.js -->
+
+-   terminal: `npm i axios`
+-   importalo en Registrar... con esto usas axios para realizar peticiones get y post
+
+cors en el backend (comunicacion entre frontend y backend):
+
+-   instala cors -> terminal `npm i cors`
+    <!-- CORS es una tecnología de seguridad que permite a un servidor especificar qué otros dominios pueden interactuar con él -->
+    <!-- cors protege una api, impidiendo que alguien consuma o acceda a nuestra api -->
+    <!-- por ejemplo mediante cors evitamos que un dominio (que yo no permito) consuma mi api -->
+    <!-- recuerda que el backend esta en un puerto (4000) distinto al frontend (5173), por lo que cors actua impidiendo que se consuman entre ellos. a menos que coloques y configures tu cors -->
+
+-   en el index.js de tu backend coloca los dominios permitidos y configura tu cors
+-   ya podrias ser capaz de comunicar el frontend con el backend
+<!-- recuerda que es importante enviar una respuesta del backend hacia el frontend al momento de realizar operaciones por ejemplo en el submit de un formulario o en los verbos HTTP -->
+
+**haciendo funcionar el email**
+
+configurando
+
+-   **situate en el BACKEND**
+-   instalamos el paquete (de produccion) nodemailer, permite enviar emails usando node.js
+-   nos registramos en mailetrap que permite PROBAR el envio de emails en nuestra app (en desarrollo)... funciona como nuestra bandeja de entrada, esta tiene muchas integraciones, también se integra con nodemailer.
+-   en mailetrap crea un inbox y copia el codigo de integraciones para nodemailer...
+-   las configuraciones deben estar en el backend. en la carpeta helpers crea emailRegistro e emailOlvidePassword (aqui coloca el codigo de integracion que copiaste de mailetrap... basicamente es la variable de transport. también importa nodemailer y bueno configura y crea tu email)....
+-   no olvides crear tus variables de entorno en reemplazo de las credenciales de mailetrap en tus archivos de configuracion
+<!-- RECUERDA reiniciar tu backend por las variables de entorno -->
+-   en tu veterinarioController coloca la funcion para enviar el email, el cual llama ala funcion creada en emailRegistro
+
+confirmando la cuenta del usuario
+
+<!-- tienes que usar el axios para enviar una soli get a tu url especificada... -->
+
+inserta variables de entorno en el frontend
+
+-   recuerda que deben estar almacenadas en su propio archivo .env en la carpeta frontend, ya no en el backend, ese es otro
+-   recuerda que estas deben tener la denomiuacion VITE\_ al inicio, y debes importarlo con sus propia sintaxis.
+    <!-- recuerda reiniciar tu servidor (backend y frontend) para que las variables de entorno funcionen -->
+
+crea una url base de axios en tu archivo config/axios.jsx
+
+crea un context de autenticacion
+
+<!-- context api es una forma de almacenar un estado globalmente... un state. context es una alternativa a redux -->
+
+-   crea tu archivo context/AuthProvider.jsx... y configura tu provider y tu context
+- crea tu custom hook (hook personalizado) en hooks/useAuth.jsx (por convension debes colcoar use)... esto PARA HACER USO DEL PROVIDER

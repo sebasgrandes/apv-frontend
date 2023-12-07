@@ -1,0 +1,34 @@
+# tengo este if: que contiene las cabeceras o headers del req? para que sirve?
+
+```javascript
+if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+    )
+```
+
+En el contexto de una solicitud HTTP (como las que se realizan en aplicaciones web o APIs), las cabeceras o headers son una parte esencial del mensaje de solicitud. Proporcionan información adicional sobre la solicitud, como el tipo de contenido, la longitud del contenido, la autenticación, y otros detalles importantes.
+
+El `if` en tu código está revisando dos cosas específicas en los headers de la solicitud (`req`):
+
+1. **Existencia de `Authorization`**:
+
+    - `req.headers.authorization` verifica si existe una cabecera llamada `Authorization` en la solicitud entrante.
+    - La cabecera `Authorization` se utiliza comúnmente para enviar credenciales que autentican una solicitud enviada por un cliente al servidor.
+
+2. **Comprobación de Esquema de Autenticación**:
+    - `req.headers.authorization.startsWith("Bearer")` comprueba si el valor de la cabecera `Authorization` comienza con la palabra "Bearer".
+    - El esquema "Bearer" es un método común para enviar un token de acceso, como un JWT, en solicitudes HTTP. Cuando utilizas este esquema, el valor de la cabecera `Authorization` se compone de la palabra "Bearer" seguida de un espacio y luego el token de acceso.
+
+### Ejemplo de Cabecera `Authorization`:
+
+```
+Authorization: Bearer <tu_token_jwt_aquí>
+```
+
+### Uso en tu Código:
+
+-   Este `if` se utiliza para determinar si la solicitud incluye una cabecera de autorización que contiene un token JWT. Si es así, el código probablemente continuará extrayendo y verificando este token.
+-   Esto es típico en APIs y aplicaciones web donde necesitas autenticar solicitudes para acceder a recursos protegidos. Si el token es válido, la solicitud puede proceder; si no, se puede rechazar o pedir autenticación.
+
+En resumen, este fragmento de código es una parte estándar de la lógica de autenticación en muchas aplicaciones web y APIs, donde se verifica si la solicitud entrante contiene un token de autorización válido en sus cabeceras.

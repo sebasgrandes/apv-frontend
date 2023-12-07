@@ -1,0 +1,19 @@
+# que es un endpoint?
+
+Un "endpoint" es un término comúnmente utilizado en el contexto de las API (Interfaces de Programación de Aplicaciones) y se refiere a un punto de acceso o una URL específica en un servicio web o una aplicación web. Básicamente, un endpoint es una dirección web que se utiliza para realizar operaciones específicas o acceder a recursos específicos en un sistema a través de HTTP u otro protocolo de comunicación similar.
+
+Aquí hay algunas características clave de los endpoints:
+
+1. **Dirección Web Única:** Cada endpoint tiene una dirección web única que se utiliza para acceder a él. Por ejemplo, un endpoint para obtener información de un usuario podría ser algo como `https://api.example.com/users/123`.
+
+2. **Función Específica:** Cada endpoint está asociado con una función o acción específica en el sistema. Puede utilizarse para obtener información, enviar datos, actualizar recursos, eliminar recursos, autenticar usuarios, etc.
+
+3. **Utiliza Métodos HTTP:** Los endpoints generalmente se utilizan en combinación con los métodos HTTP estándar, como GET, POST, PUT, DELETE, para indicar la acción que se debe realizar en el recurso asociado con ese endpoint.
+
+4. **Devuelve Datos Estructurados:** Los endpoints suelen devolver datos en un formato estructurado, como JSON o XML, que puede ser procesado fácilmente por las aplicaciones cliente.
+
+5. **Seguridad y Autenticación:** Algunos endpoints pueden requerir autenticación y autorización para acceder a ellos, lo que ayuda a proteger los recursos y los datos.
+
+6. **Documentación:** En aplicaciones web y APIs bien diseñadas, los endpoints suelen estar documentados para que los desarrolladores sepan cómo utilizarlos correctamente, qué datos esperar y qué métodos HTTP son compatibles.
+
+En resumen, un endpoint es un punto de acceso específico en una API o una aplicación web que permite a los clientes realizar operaciones o acceder a recursos de manera estructurada a través de Internet. Cada endpoint tiene una función clara y está diseñado para ser accesible mediante una URL única.

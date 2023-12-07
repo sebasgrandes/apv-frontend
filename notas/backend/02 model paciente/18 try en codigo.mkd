@@ -1,0 +1,76 @@
+# en los videos del profe algunas veces no ponia try catch asi que pregunte si era necesario... y si lo es:
+
+Sí, es recomendable agregar el bloque `try-catch` en tu función `obtenerPaciente`. Aquí te explico por qué:
+
+1. **Manejo de Errores**: El método `Paciente.findById(id)` puede arrojar un error si algo sale mal con la base de datos o si el ID proporcionado no es válido. Sin un bloque `try-catch`, estos errores provocarían que tu aplicación se detuviera o se comportara de manera inesperada.
+
+2. **Mejora la Robustez**: Al capturar errores, tu función se vuelve más robusta y confiable. Puedes manejar situaciones excepcionales de manera elegante y proporcionar una respuesta adecuada al cliente, como un mensaje de error específico o un código de estado HTTP adecuado.
+
+3. **Depuración y Mantenimiento**: En el bloque `catch`, puedes registrar detalles del error, lo que facilita la depuración y el mantenimiento de tu aplicación.
+
+4. **Buena Práctica**: Es una buena práctica en programación manejar posibles errores y excepciones para prevenir fallos inesperados.
+
+Por lo tanto, te sugiero descomentar el bloque `try-catch` y manejar apropiadamente los errores. Aquí tienes un ejemplo de cómo podrías estructurarlo:
+
+```javascript
+const obtenerPaciente = async (req, res) => {
+    // ... código previo ...
+
+    try {
+        const paciente = await Paciente.findById(id);
+
+        if (!paciente) {
+            return res.status(400).json({ msg: "Paciente no encontrado" });
+        }
+
+        // ... verificación del veterinario ...
+
+        res.json(paciente);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al obtener el paciente" });
+    }
+};
+```
+
+En este ejemplo, si `Paciente.findById(id)` arroja un error, se captura y se devuelve una respuesta con un código de estado HTTP 500, indicando un error del lado del servidor. Esto es más informativo y seguro que permitir que la aplicación falle.
+
+# aqui también seria necesario cierto?
+
+```javascript
+const obtenerPacientess = async (req, res) => {
+    // con find nos traemos todos pero con where equals filtramos aquellos pacientes cuya propiedad de veterinario es igual a la del veterinario de la autenticacion (req.veterinario)
+    const pacientes = await Paciente.find()
+        .where("veterinario")
+        .equals(req.veterinario);
+
+    res.json(pacientes);
+};
+```
+
+Sí, también es recomendable usar un bloque `try-catch` en la función `obtenerPacientes`. Aunque este caso puede parecer más simple porque no se busca por un ID específico, aún hay varias razones para manejar posibles errores:
+
+1. **Errores de Base de Datos**: Incluso una consulta simple como `Paciente.find()` puede fallar por múltiples razones, como problemas de conexión con la base de datos, errores en la configuración de la consulta, o problemas internos del servidor de base de datos.
+
+2. **Consistencia en el Manejo de Errores**: Mantener un enfoque consistente en el manejo de errores en todas tus funciones de acceso a datos ayuda a mantener tu código más organizado y predecible.
+
+3. **Respuestas Claras al Cliente**: En caso de un error, es importante enviar una respuesta clara y adecuada al cliente, en lugar de dejar que la petición quede sin respuesta o termine en un error inesperado.
+
+Aquí tienes un ejemplo de cómo podrías implementar el `try-catch` en tu función:
+
+```javascript
+const obtenerPacientes = async (req, res) => {
+    try {
+        const pacientes = await Paciente.find()
+            .where("veterinario")
+            .equals(req.veterinario);
+
+        res.json(pacientes);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al obtener los pacientes" });
+    }
+};
+```
+
+En este código, si ocurre algún error durante la ejecución de la consulta, se captura y se envía una respuesta adecuada al cliente. Esto mejora la confiabilidad y la claridad de tu API.

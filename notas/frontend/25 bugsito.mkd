@@ -1,0 +1,83 @@
+# el bugsito
+Hola, quisiera que por favor me expliquen un poco mejor porque se produce el bug, ya que no terminé de entenderlo con la explicación del video. Una vez hecho el login, la app redirigía a /admin, y en la carga de RutaProtegida entiendo que se ejecutaba el useEffect del AuthProvider. En ese momento, ¿no estábamos ya cargando el state auth, mediante setAuth(data), cuando hacíamos la consulta al backend (veterinarios/perfil)?:
+
+
+
+            try {
+                const { data } = await clienteAxios('/veterinarios/perfil', config);
+                setAuth(data);
+            } catch (error) {
+                console.log(error.response.data.msg);
+                setAuth({});
+            } 
+
+
+Es decir, no entiendo por que tuvimos que modificar el veterinarioController del backend y el login para guardar los datos del usuario en auth, si ya lo hace el AuthProvider al ejecutarse el useEffect, ¿o no?. Espero haberme explicado correctamente y agradezco cualquier ayuda que me puedan brindar para comprenderlo mejor.
+
+# aporte de un comentario udemy:
+
+Estuve dándole vueltas al asunto porque tampoco lo entendía, y obtuve la siguiente conclusión:
+
+Planteando el flujo de la aplicación cuando se hace login, viendo como es la secuencia de lineas ejecutadas y de qué archivo son estas:
+
+(el código está de manera resumida, no literal)
+
+Flujo actual:
+
+//Login.jsx 
+	await clienteAxios.post('/veterinarios/login' ...
+//-> veterinarioController.js 
+	await usuario.comprobarPassword(password)
+	res.json(id,nombre,email,token: generarJWT())
+//-> Login.jsx
+	setAuth(id,nombre,email,token)
+	localStorage.setItem(token)
+	navigate(/admin) //---> desencadena useEffect en AuthProvider.jsx
+//-> AuthProvider.jsx =
+	//cargando = true
+        token = localStorage.getItem(token)
+	if (token)
+	  await clienteAxios.get('/veterinarios/perfil' ...
+	  setAuth(data.perfil)
+	  setCargando(false)
+//-> RutaProtegida.jsx
+        if(cargando) return 
+	auth._id ? <Outlet /> : <Navigate to='/' />
+Flujo antes:
+
+//Login.jsx 
+	await clienteAxios.post('/veterinarios/login' ...
+//-> veterinarioController.js 
+	await usuario.comprobarPassword(password)
+	res.json(generarJWT())
+//-> Login.jsx 
+	localStorage.setItem(token)
+	navigate(/admin) //---> desencadena useEffect en AuthProvider.jsx
+//-> AuthProvider.jsx
+	// cargando = true
+        token = localStorage.getItem(token)
+	if (token)
+	  await clienteAxios.get('/veterinarios/perfil' ...
+	  setAuth(data.perfil)
+	  setCargando(false)
+//-> RutaProtegida.jsx
+	if(cargando) return 
+	auth._id ? <Outlet /> : <Navigate to='/' />
+
+
+Teniendo visto esto, podemos ver que el cambio principal hecho es al logearse, devolver en la respuesta del backend datos adicionales, como el id,nombre,email, además del token.
+
+Luego cuando llega esa respuesta a Login, se guarda directamente en el context, con setAuth.
+
+Lo que ocurre aquí, es que el código de AuthProvider se ejecuta cada vez que se renderiza una nueva página, al inicio, debido a estar dentro del useEffect con dependencias nulas ( [] ). La llamada a '/veterinarios/perfil' que se realiza aquí lo que hace es que cada vez que se recarga la página, trae otra vez los datos de la sesión para guardarlos en el context (ya que este con cada recarga se resetea) y por lo tanto, evita que se vuelva a la pagina inicial.
+
+Esto último, ocurre si se llega a RutaProtegida.jsx y el context (auth) no posee el atributo de _id, es decir, que no tiene los datos de la sesión, por eso hace falta el AuthProvider antes para poder volver a disponer de este dato, y así mantener la sesion abierta ante recargas de la página.
+
+Ahora, lo que estaba ocurriendo antes, es que el AuthProvider por alguna razon no podía concretar el guardado de la informacion con setAuth luego de venir desde Login, y al llegar a RutaProtegida, este estaba vacío y te devuelve al Inicio.
+
+Para evitar esto, debimos de darle un "empujón" a AuthProvider y facilitarle este dato desde el Login, agregandole estos datos con el setAuth que incluiría los datos de _id, nombre, email y token, así pudiendo superar en esta primera instancia ese problema.
+
+
+
+Espero se me haya entendido! Saludos
+

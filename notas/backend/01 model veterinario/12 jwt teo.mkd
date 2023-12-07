@@ -1,0 +1,58 @@
+# explicame de forma sencilla la aplicacion de jwt en la autenticacion
+
+Claro, explicaré la aplicación de JWT (JSON Web Tokens) en la autenticación de una manera sencilla:
+
+Imagina que estás entrando a un parque temático. Al pagar la entrada, te dan una pulsera que muestra que ya pagaste y que te da acceso a todas las atracciones. Cada vez que vas a una atracción, simplemente muestras tu pulsera y te dejan entrar sin necesidad de pagar o identificarte de nuevo.
+
+Ahora, apliquemos esto a JWT en la autenticación en línea:
+
+1. **Inicio de Sesión**: Cuando te logueas en un sitio web o aplicación (como entrar al parque temático), ingresas tu usuario y contraseña. Si son correctos, el servidor de la aplicación crea un JWT (como la pulsera del parque).
+
+2. **Estructura del JWT**: Este JWT contiene información sobre ti (como tu nombre de usuario y permisos), todo en un formato codificado y seguro.
+
+3. **Recibiendo el JWT**: El servidor te envía este JWT. Tu navegador o aplicación lo guarda, generalmente en el almacenamiento local o en una cookie.
+
+4. **Acceso a Recursos**: Luego, cada vez que haces una solicitud a ese servidor (como ir a una atracción en el parque), tu navegador o aplicación envía automáticamente el JWT. Esto es como mostrar tu pulsera en el parque temático.
+
+5. **Verificación y Acceso**: El servidor lee el JWT, verifica que sea válido (como el personal del parque que verifica tu pulsera) y te da acceso a los recursos solicitados, como datos, páginas, o acciones específicas.
+
+En resumen, el JWT en la autenticación es como una pulsera de acceso: te identifica y te da acceso a varios servicios sin necesidad de volver a ingresar tus credenciales cada vez. Es una forma eficiente y segura de manejar la autenticación en aplicaciones web y móviles.
+
+# en la pagina de jwt hay un apartado para decodificar tokens de jwt... por que se dice que es seguro?
+
+La seguridad de los JSON Web Tokens (JWT) se basa en su capacidad para ser verificados y confiables, no en el hecho de que su contenido sea secreto o indescifrable. Es importante diferenciar entre decodificación y desencriptación:
+
+1. **Decodificación**: Los JWT son codificados en Base64 para el header, el payload y la firma. Esto significa que cualquiera puede decodificar un JWT y leer su contenido. Por eso, no se deben poner datos sensibles en el payload del JWT.
+
+2. **Verificación y Firma**: La seguridad de un JWT viene de su firma. La firma es creada usando el header y el payload junto con un secreto (en el caso de HMAC) o un par de claves pública/privada (en el caso de RSA o ECDSA). Solo quien posee la clave secreta o la clave privada puede generar una firma válida.
+
+3. **¿Por qué es seguro?**: Aunque cualquiera puede decodificar y leer un JWT, no pueden modificarlo sin tener la clave secreta o privada correspondiente. Si alguien intenta modificar el payload o el header, la firma ya no será válida. Por lo tanto, cuando un servidor recibe un JWT, puede verificar si la firma es correcta usando la clave pública o el secreto. Si la firma es válida, el servidor puede confiar en que la información en el JWT es auténtica y no ha sido alterada.
+
+4. **Uso de Claves**: Es crucial mantener las claves utilizadas para firmar los JWT seguras. Si un atacante obtiene acceso a la clave secreta o privada, podría generar JWT válidos y comprometer el sistema de seguridad.
+
+En resumen, un JWT es seguro no porque su contenido sea inaccesible o indescifrable, sino porque cualquier cambio en el contenido del token invalidaría su firma, lo que puede ser fácilmente verificado por el servidor o la aplicación que lo recibe. Esto asegura que la información contenida en el JWT sea confiable y no haya sido manipulada.
+
+# que es json web token y para que sirve?
+
+JSON Web Token (JWT) es un estándar abierto (RFC 7519) que define una forma compacta y autónoma de transmitir información de manera segura entre dos partes como un objeto JSON. Esta información puede ser verificada y de confianza porque está firmada digitalmente. Los JWT pueden ser firmados usando un secreto (con el algoritmo HMAC) o un par de claves pública/privada usando RSA o ECDSA.
+
+### Usos de JWT:
+
+1. **Autenticación**: Es el uso más común de JWT. Una vez que el usuario inicia sesión, cada solicitud posterior incluirá el JWT, permitiendo al usuario acceder a rutas, servicios y recursos permitidos con ese token.
+
+2. **Intercambio de Información**: Los JWT son una buena forma de transmitir información entre dos partes de manera segura. Debido a que los JWT pueden ser firmados, por ejemplo, usando clave pública/privada, puedes estar seguro de que los remitentes son quienes dicen ser y que el contenido no ha sido alterado.
+
+### Características Clave de JWT:
+
+-   **Compacto**: Pueden ser enviados a través de un URL, parámetro POST, o dentro de un encabezado HTTP.
+
+-   **Autónomo**: La carga útil contiene toda la información necesaria sobre el usuario, evitando la necesidad de consultar la base de datos más de una vez.
+
+Un JWT está compuesto por tres partes:
+
+1. **Header**: Generalmente consiste en dos partes: el tipo de token (JWT) y el algoritmo de firma utilizado (como HMAC SHA256 o RSA).
+2. **Payload**: Contiene las declaraciones. Estas son afirmaciones sobre el usuario (como el nombre de usuario) y metadatos adicionales.
+
+3. **Signature**: Para crear la firma, se toma el codificado base64 del header y del payload, se une con un punto, y se firma con el algoritmo especificado en el header.
+
+Debido a su naturaleza ligera y a su capacidad para transmitir información de manera segura entre distintas partes, los JWT se han vuelto populares en aplicaciones web modernas, especialmente en las basadas en RESTful APIs. Su uso es importante en el campo de la Economía y Negocios Internacionales, especialmente cuando se trata de la seguridad de las transacciones y el intercambio de información en sistemas económicos digitales.
