@@ -1,8 +1,9 @@
-# React + Vite
+# Proyecto: Administrador de Pacientes de Veterinaria
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+✅ Tecnologías Utilizadas:
+Frontend: React, React Router y TailwindCSS
+Backend: Express, MongoDB y Node.js
 
-Currently, two official plugins are available:
+El despliegue puede verlo aquí: https://apv-frontend-snowy.vercel.app/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+![mockup Administrador de Pacientes de Veterinaria](https://github.com/sebasgrandes/apv-frontend/assets/105091502/fb851414-5a22-45ac-979f-57befcc3e465)
